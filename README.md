@@ -32,3 +32,7 @@ When the generator is selected `ShowPanel(Panel parent)` is called. You can add 
 When the `Generate` button is pressed the `Generate(Shape shape)` method will be called. You can add any parameters to the shape. When the method is called there are already texture settings there. If root was enabled all shape elements will be moved in root before export.
 
 To add your own generator just drop the dll into the `generators` folder.
+
+## TODOs
+- Add element and face parameters like render-pass and glow
+- Make saveable presets
