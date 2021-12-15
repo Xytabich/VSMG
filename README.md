@@ -25,6 +25,6 @@ WPF is used for UI. The generator must be marked with the `ShapeGenerator(...)` 
 
 When the generator is selected `ShowPanel(Panel parent)` is called. You can add the necessary controls to the `parent`. When switching to another generator `OnHide()` will be called.
 
-When the `Generate` button is pressed the `Generate(Shape shape)` method will be called. The `shape` contains the parameters of the textures.
+When the `Generate` button is pressed the `Generate(Shape shape)` method will be called. You can add any parameters to the shape. When the method is called there are already texture settings there. If root was enabled all shape elements will be moved in root before export.
 
 To add your own generator just drop the dll into the `generators` folder.
