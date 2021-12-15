@@ -1,6 +1,8 @@
 # VSMG
 Generator of simple models for VS Model Creator. Creates only basic shapes and assigns uvs and textures, the rest of the refinement is done in VSMC.
 
+![img](preview.png)
+
 ### How it works
 A generator consists of a main application and generator plug-ins. Dll generators located in the `generators` folder are connected at application start.
 
