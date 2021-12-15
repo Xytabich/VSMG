@@ -8,6 +8,8 @@
     <Authors>Xytabich</Authors>
     <OutputPath>..\output</OutputPath>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <AllowedReferenceRelatedFileExtensions>false</AllowedReferenceRelatedFileExtensions>
+    <Version>1.0.1</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
