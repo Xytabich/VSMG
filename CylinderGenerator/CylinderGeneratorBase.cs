@@ -29,6 +29,7 @@ namespace CylinderGenerator
             int sizeZ = voxels.GetLength(2);
             var cuboids = ModelUtils.VoxelsToCuboids(voxels, sizeX, sizeY, sizeZ);
             ModelUtils.MergeNeighbors(cuboids, sizeX, sizeY, sizeZ);
+            ModelUtils.RemoveInvisibleCuboids(cuboids, sizeX, sizeY, sizeZ);
 
             var exported = new HashSet<CuboidInfo>();
             var elements = new List<ShapeElement>();

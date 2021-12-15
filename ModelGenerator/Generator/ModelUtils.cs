@@ -48,14 +48,11 @@ namespace ModelGenerator
         /// </summary>
         public static void RemoveInvisibleCuboids(CuboidInfo[,,] cuboids, int sizeX, int sizeY, int sizeZ)
         {
-            sizeX--;
-            sizeY--;
-            sizeZ--;
-            for(int x = 0; x <= sizeX; x++)
+            for(int x = 0; x < sizeX; x++)
             {
-                for(int y = 0; y <= sizeY; y++)
+                for(int y = 0; y < sizeY; y++)
                 {
-                    for(int z = 0; z <= sizeZ; z++)
+                    for(int z = 0; z < sizeZ; z++)
                     {
                         if(cuboids[x, y, z] != null && cuboids[x, y, z].neighbors == ALL_NEIGHBORS)
                         {

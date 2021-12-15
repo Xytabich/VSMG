@@ -27,6 +27,7 @@ namespace SphereGenerator
             int size = voxels.GetLength(0);
             var cuboids = ModelUtils.VoxelsToCuboids(voxels, size, size, size);
             ModelUtils.MergeNeighbors(cuboids, size, size, size);
+            ModelUtils.RemoveInvisibleCuboids(cuboids, size, size, size);
 
             var exported = new HashSet<CuboidInfo>();
             var elements = new List<ShapeElement>();
