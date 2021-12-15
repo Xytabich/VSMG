@@ -6,6 +6,8 @@ A generator consists of a main application and generator plug-ins. Dll generator
 
 In the application you can select a generator and configure it. Additionally you can customize textures and root object. To export the generated model file click "Generate".
 
+There is a lot of metadata in json,since the serializer saves all the fields. So it is recommended to re-save the model through VSMC.
+
 ### Sphere generator
 It is possible to choose:
 - Radius
