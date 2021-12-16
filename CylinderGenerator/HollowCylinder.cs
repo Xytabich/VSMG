@@ -1,10 +1,12 @@
 ﻿using ModelGenerator;
+using Newtonsoft.Json;
 using System;
+using Vintagestory.API.MathTools;
 
 namespace CylinderGenerator
 {
-    [ShapeGenerator("Hollow Cylinder")]
-    public class HollowCylinder : CylinderGeneratorBase
+    [ShapeGenerator("Hollow Cylinder", typeof(PresetData))]
+    public class HollowCylinder : CylinderGeneratorBase, IPresetShapeGenerator
     {
         private HollowCylinderGeneratorPanel hollowPanel;
 
@@ -17,6 +19,24 @@ namespace CylinderGenerator
         {
             base.OnHide();
             hollowPanel = null;
+        }
+
+        public void ApplyPreset(object obj)
+        {
+            var preset = (PresetData)obj;
+            hollowPanel.SetValues(preset.offset, preset.outerRadius, preset.innerRadius, preset.length, preset.axis, preset.isEven);
+        }
+
+        public object CreatePreset()
+        {
+            return new PresetData() {
+                offset = hollowPanel.GetOffset(),
+                outerRadius = hollowPanel.GetRadius(),
+                innerRadius = hollowPanel.GetInnerRadius(),
+                length = hollowPanel.GetLength(),
+                axis = hollowPanel.GetAxis(),
+                isEven = hollowPanel.IsEven()
+            };
         }
 
         protected override bool[,,] GenerateVoxels(int radius, int length, int axis, bool even)
@@ -83,6 +103,28 @@ namespace CylinderGenerator
                     }
                 }
             }
+        }
+
+        [JsonObject]
+        public class PresetData
+        {
+            [JsonProperty]
+            public int outerRadius;
+
+            [JsonProperty]
+            public int innerRadius;
+
+            [JsonProperty]
+            public int length;
+
+            [JsonProperty]
+            public int axis;
+
+            [JsonProperty]
+            public bool isEven;
+
+            [JsonProperty]
+            public Vec3d offset;
         }
     }
 }

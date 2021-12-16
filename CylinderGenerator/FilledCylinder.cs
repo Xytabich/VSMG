@@ -1,11 +1,30 @@
 ﻿using ModelGenerator;
+using Newtonsoft.Json;
 using System;
+using Vintagestory.API.MathTools;
 
 namespace CylinderGenerator
 {
-    [ShapeGenerator("Filled Cylinder")]
-    public class FilledCylinder : CylinderGeneratorBase
+    [ShapeGenerator("Filled Cylinder", typeof(PresetData))]
+    public class FilledCylinder : CylinderGeneratorBase, IPresetShapeGenerator
     {
+        public void ApplyPreset(object obj)
+        {
+            var preset = (PresetData)obj;
+            panel.SetValues(preset.offset, preset.radius, preset.length, preset.axis, preset.isEven);
+        }
+
+        public object CreatePreset()
+        {
+            return new PresetData() {
+                offset = panel.GetOffset(),
+                radius = panel.GetRadius(),
+                length = panel.GetLength(),
+                axis = panel.GetAxis(),
+                isEven = panel.IsEven()
+            };
+        }
+
         protected override bool[,,] GenerateVoxels(int radius, int length, int axis, bool even)
         {
             Action<int, int> voxelSetter = null;
@@ -68,6 +87,25 @@ namespace CylinderGenerator
                     }
                 }
             }
+        }
+
+        [JsonObject]
+        public class PresetData
+        {
+            [JsonProperty]
+            public int radius;
+
+            [JsonProperty]
+            public int length;
+
+            [JsonProperty]
+            public int axis;
+
+            [JsonProperty]
+            public bool isEven;
+
+            [JsonProperty]
+            public Vec3d offset;
         }
     }
 }

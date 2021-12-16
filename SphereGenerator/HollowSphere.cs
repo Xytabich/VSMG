@@ -1,9 +1,11 @@
 ﻿using ModelGenerator;
+using Newtonsoft.Json;
+using Vintagestory.API.MathTools;
 
 namespace SphereGenerator
 {
-    [ShapeGenerator("Hollow Sphere")]
-    public class HollowSphere : SphereGeneratorBase
+    [ShapeGenerator("Hollow Sphere", typeof(PresetData))]
+    public class HollowSphere : SphereGeneratorBase, IPresetShapeGenerator
     {
         private HollowSphereGeneratorPanel hollowPanel;
 
@@ -16,6 +18,22 @@ namespace SphereGenerator
         {
             base.OnHide();
             hollowPanel = null;
+        }
+
+        public void ApplyPreset(object obj)
+        {
+            var preset = (PresetData)obj;
+            hollowPanel.SetValues(preset.offset, preset.outerRadius, preset.innerRadius, preset.isEven);
+        }
+
+        public object CreatePreset()
+        {
+            return new PresetData() {
+                offset = hollowPanel.GetOffset(),
+                outerRadius = hollowPanel.GetRadius(),
+                innerRadius = hollowPanel.GetInnerRadius(),
+                isEven = hollowPanel.IsEven()
+            };
         }
 
         protected override bool[,,] GenerateVoxels(int radius, bool even)
@@ -60,6 +78,22 @@ namespace SphereGenerator
                     }
                 }
             }
+        }
+
+        [JsonObject]
+        public class PresetData
+        {
+            [JsonProperty]
+            public int outerRadius;
+
+            [JsonProperty]
+            public int innerRadius;
+
+            [JsonProperty]
+            public bool isEven;
+
+            [JsonProperty]
+            public Vec3d offset;
         }
     }
 }

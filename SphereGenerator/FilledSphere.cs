@@ -1,10 +1,27 @@
 ﻿using ModelGenerator;
+using Newtonsoft.Json;
+using Vintagestory.API.MathTools;
 
 namespace SphereGenerator
 {
-    [ShapeGenerator("Filled Sphere")]
-    public class FilledSphere : SphereGeneratorBase
+    [ShapeGenerator("Filled Sphere", typeof(PresetData))]
+    public class FilledSphere : SphereGeneratorBase, IPresetShapeGenerator
     {
+        public void ApplyPreset(object obj)
+        {
+            var preset = (PresetData)obj;
+            panel.SetValues(preset.offset, preset.radius, preset.isEven);
+        }
+
+        public object CreatePreset()
+        {
+            return new PresetData() {
+                offset = panel.GetOffset(),
+                radius = panel.GetRadius(),
+                isEven = panel.IsEven()
+            };
+        }
+
         protected override bool[,,] GenerateVoxels(int radius, bool even)
         {
             if(even)
@@ -45,6 +62,19 @@ namespace SphereGenerator
                     }
                 }
             }
+        }
+
+        [JsonObject]
+        public class PresetData
+        {
+            [JsonProperty]
+            public int radius;
+
+            [JsonProperty]
+            public bool isEven;
+
+            [JsonProperty]
+            public Vec3d offset;
         }
     }
 }
