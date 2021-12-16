@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Globalization;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -26,6 +27,11 @@ namespace ModelGenerator
             return value;
         }
 
+        public static void SetInteger(this TextBox field, int value)
+        {
+            field.Text = value.ToString();
+        }
+
         public static short GetShort(this TextBox field, short def = default)
         {
             short value;
@@ -36,8 +42,13 @@ namespace ModelGenerator
         public static double GetDouble(this TextBox field, double def = default)
         {
             double value;
-            if(!double.TryParse(field.Text.Trim(), out value)) value = def;
+            if(!double.TryParse(field.Text.Trim(), NumberStyles.Float, NumberFormatInfo.InvariantInfo, out value)) value = def;
             return value;
+        }
+
+        public static void SetDouble(this TextBox field, double value)
+        {
+            field.Text = value.ToString("g", NumberFormatInfo.InvariantInfo);
         }
 
         private static readonly Regex integerPattern = new Regex(@"^[0-9]*$");

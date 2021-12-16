@@ -8,4 +8,11 @@
 
         void Generate(GeneratorContext context);
     }
+
+    public interface IPresetShapeGenerator : IShapeGenerator
+    {
+        void ApplyPreset(object preset);
+
+        object CreatePreset();
+    }
 }

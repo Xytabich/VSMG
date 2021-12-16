@@ -5,8 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ModelGenerator"
         xmlns:p="clr-namespace:ModelGenerator.Properties"
-        xmlns:System="clr-namespace:System;assembly=System.Runtime" x:Class="ModelGenerator.MainWindow"
+        xmlns:System="clr-namespace:System;assembly=System.Runtime"
         mc:Ignorable="d"
+        x:Class="ModelGenerator.MainWindow"
         Title="Model Generator" MinHeight="250"
         Height="{Binding Source={x:Static p:Settings.Default}, Path=Height, Mode=TwoWay}"
         Width="{Binding Source={x:Static p:Settings.Default}, Path=Width, Mode=TwoWay}"
@@ -20,19 +21,33 @@
             <ColumnDefinition Width="*" MinWidth="200" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
+            <RowDefinition Height="20"></RowDefinition>
             <RowDefinition Height="24"></RowDefinition>
             <RowDefinition></RowDefinition>
             <RowDefinition Height="24"></RowDefinition>
         </Grid.RowDefinitions>
-        <Label Content="Generator settings" Padding="6,4,6,4"/>
-        <Label Content="Shape settings" Grid.Column="2" Padding="6,4,6,4"/>
+        <Menu Grid.ColumnSpan="3">
+            <MenuItem Header="File">
+                <MenuItem Header="Load Preset(s)" Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:MainWindow}, Path=loadCommand}"/>
+                <MenuItem Header="Save Generator Preset" Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:MainWindow}, Path=saveCommand}" CommandParameter="generator"/>
+                <MenuItem Header="Save Shape Preset" Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:MainWindow}, Path=saveCommand}" CommandParameter="shape"/>
+            </MenuItem>
+        </Menu>
 
-        <GridSplitter Width="3" ShowsPreview="False" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center"/>
-        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+        <DockPanel Grid.Row="1">
+            <ComboBox x:Name="generatorPreset" Height="22" MinWidth="120" MaxWidth="240" DockPanel.Dock="Right"/>
+            <Label Content="Generator settings" Padding="6,4,6,4"/>
+        </DockPanel>
+        <DockPanel Grid.Row="1" Grid.Column="2">
+            <ComboBox x:Name="shapePreset" Height="22" MinWidth="120" MaxWidth="240" DockPanel.Dock="Right"/>
+            <Label Content="Shape settings" Padding="6,4,6,4"/>
+        </DockPanel>
+
+        <GridSplitter Width="3" ShowsPreview="False" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Center"/>
+        <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
             <DockPanel x:Name="generatorPanel"/>
         </ScrollViewer>
-        <ComboBox x:Name="generatorSelect" Grid.Row="2"/>
-        <ScrollViewer Grid.Row="1" Grid.Column="2" VerticalScrollBarVisibility="Auto">
+        <ScrollViewer Grid.Row="2" Grid.Column="2" VerticalScrollBarVisibility="Auto">
             <StackPanel x:Name="settingsPanel">
                 <Expander Header="Texture size">
                     <Grid Margin="26,0,0,0">
@@ -94,6 +109,7 @@
                 </Expander>
             </StackPanel>
         </ScrollViewer>
-        <Button x:Name="generate" Grid.Row="2" Grid.Column="2" Content="Generate"/>
+        <ComboBox x:Name="generatorSelect" Grid.Row="3"/>
+        <Button x:Name="generate" Grid.Row="3" Grid.Column="2" Content="Generate"/>
     </Grid>
 </Window>

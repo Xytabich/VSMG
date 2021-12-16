@@ -1,12 +1,15 @@
 ﻿using ModelGenerator;
 using System.Windows;
 using System.Windows.Controls;
+using Vintagestory.API.MathTools;
 
 namespace SphereGenerator
 {
     public class HollowSphereGeneratorPanel : SphereGeneratorPanel
     {
-        private TextBox innerRadius;
+        private TextBox sphereInnerRadius;
+
+        private int innerRadius = 1;
 
         static HollowSphereGeneratorPanel()
         {
@@ -17,13 +20,33 @@ namespace SphereGenerator
         {
             base.OnApplyTemplate();
 
-            innerRadius = GetTemplateChild("sphereInnerRadius") as TextBox;
-            ControlUtils.InitIntegerField(innerRadius);
+            sphereInnerRadius = GetTemplateChild("sphereInnerRadius") as TextBox;
+
+            sphereInnerRadius.InitIntegerField();
+            sphereInnerRadius.SetInteger(innerRadius);
+
+            sphereInnerRadius.TextChanged += OnRadiusChanged;
         }
 
         public int GetInnerRadius()
         {
-            return innerRadius.GetInteger(1);
+            return innerRadius;
+        }
+
+        public void SetValues(Vec3d offset, int outerRadius, int innerRadius, bool isEven)
+        {
+            base.SetValues(offset, outerRadius, isEven);
+
+            this.innerRadius = innerRadius;
+            if(sphereInnerRadius != null)
+            {
+                sphereInnerRadius.SetInteger(innerRadius);
+            }
+        }
+
+        private void OnRadiusChanged(object sender, TextChangedEventArgs e)
+        {
+            innerRadius = sphereInnerRadius.GetInteger(1);
         }
     }
 }

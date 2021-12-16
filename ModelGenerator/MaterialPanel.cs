@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.Windows;
 using System.Windows.Controls;
 
 namespace ModelGenerator
 {
-    public class MaterialPanel : Control, IDisposable
+    public class MaterialPanel : Control
     {
         public Action onNameChanged = null;
 
@@ -51,22 +50,22 @@ namespace ModelGenerator
             materialReflective = GetTemplateChild("materialReflective") as CheckBox;
 
             materialName.Text = material.name ?? "";
-            materialTexture.ItemsSource = new ReadOnlyCollection<string>(textureKeys);
+            materialTexture.IsSynchronizedWithCurrentItem = true;
+            materialTexture.ItemsSource = textureKeys;
             materialTexture.SelectedIndex = string.IsNullOrEmpty(material.texture) ? -1 : textureKeys.IndexOf(material.texture);
             materialShade.IsChecked = material.shade;
-            ControlUtils.InitIntegerField(materialGlow);
-            materialGlow.Text = material.glow.ToString();
+            materialGlow.InitIntegerField();
+            materialGlow.SetInteger(material.glow);
             materialClimateColorMap.Text = material.climateColorMap ?? "";
             materialSeasonColorMap.Text = material.seasonColorMap ?? "";
             materialRenderPass.SelectedIndex = material.renderPass;
-            ControlUtils.InitIntegerField(materialZOffset);
-            materialZOffset.Text = material.zOffset.ToString();
+            materialZOffset.InitIntegerField();
+            materialZOffset.SetInteger(material.zOffset);
             materialWaterWave.IsChecked = material.waterWave;
             materialReflective.IsChecked = material.reflective;
 
             materialName.TextChanged += OnNameChanged;
             materialTexture.SelectionChanged += OnTextureChanged;
-            textureKeys.CollectionChanged += OnTextureListChanged;
             materialShade.Checked += OnShadeChanged;
             materialShade.Unchecked += OnShadeChanged;
             materialGlow.TextChanged += OnGlowChanged;
@@ -78,38 +77,6 @@ namespace ModelGenerator
             materialWaterWave.Unchecked += OnWaterWaveChanged;
             materialReflective.Checked += OnReflectiveChanged;
             materialReflective.Unchecked += OnReflectiveChanged;
-        }
-
-        public void Dispose()
-        {
-            textureKeys.CollectionChanged -= OnTextureListChanged;
-        }
-
-        private void OnTextureListChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            switch(e.Action)
-            {
-                case NotifyCollectionChangedAction.Remove:
-                    if(e.OldStartingIndex == materialTexture.SelectedIndex)
-                    {
-                        materialTexture.SelectedIndex = -1;
-                    }
-                    break;
-                case NotifyCollectionChangedAction.Reset:
-                    if(materialTexture.SelectedIndex >= 0)
-                    {
-                        materialTexture.SelectedIndex = -1;
-                    }
-                    break;
-                case NotifyCollectionChangedAction.Move:
-                case NotifyCollectionChangedAction.Replace:
-                    int index = materialTexture.SelectedIndex;
-                    if(e.OldStartingIndex == index || e.NewStartingIndex == index)
-                    {
-                        materialTexture.SelectedItem = textureKeys[index];
-                    }
-                    break;
-            }
         }
 
         private void OnNameChanged(object sender, TextChangedEventArgs e)
@@ -137,7 +104,7 @@ namespace ModelGenerator
 
         private void OnGlowChanged(object sender, TextChangedEventArgs e)
         {
-            material.glow = ControlUtils.GetInteger(materialGlow);
+            material.glow = materialGlow.GetInteger();
         }
 
         private void OnClimateColorMapChanged(object sender, TextChangedEventArgs e)
@@ -157,7 +124,7 @@ namespace ModelGenerator
 
         private void OnZOffsetChanged(object sender, TextChangedEventArgs e)
         {
-            material.zOffset = ControlUtils.GetShort(materialZOffset);
+            material.zOffset = materialZOffset.GetShort();
         }
 
         private void OnWaterWaveChanged(object sender, RoutedEventArgs e)

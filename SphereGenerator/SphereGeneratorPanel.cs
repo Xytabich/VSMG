@@ -7,9 +7,13 @@ namespace SphereGenerator
 {
     public class SphereGeneratorPanel : Control
     {
-        private TextBox sphereRadius;
-        private CheckBox sphereEven;
-        private Vec3dBox sphereOffset;
+        private TextBox sphereRadius = null;
+        private CheckBox sphereEven = null;
+        private Vec3dBox sphereOffset = null;
+
+        private int radius = 1;
+        private bool isEven = true;
+        private Vec3d offset = Vec3d.Zero;
 
         static SphereGeneratorPanel()
         {
@@ -24,22 +28,53 @@ namespace SphereGenerator
             sphereEven = GetTemplateChild("sphereEven") as CheckBox;
             sphereOffset = GetTemplateChild("sphereOffset") as Vec3dBox;
 
-            ControlUtils.InitIntegerField(sphereRadius);
+            sphereRadius.InitIntegerField();
+
+            sphereRadius.SetInteger(radius);
+            sphereEven.IsChecked = isEven;
+            sphereOffset.SetValue(offset);
+
+            sphereRadius.TextChanged += OnRadiusChanged;
+            sphereEven.Checked += OnEvenChanged;
+            sphereEven.Unchecked += OnEvenChanged;
         }
 
         public Vec3d GetOffset()
         {
-            return sphereOffset.GetValue();
+            return sphereOffset == null ? offset : sphereOffset.GetValue();
         }
 
         public int GetRadius()
         {
-            return sphereRadius.GetInteger(1);
+            return radius;
         }
 
         public bool IsEven()
         {
-            return sphereEven.IsChecked == true;
+            return isEven;
+        }
+
+        public void SetValues(Vec3d offset, int radius, bool isEven)
+        {
+            this.radius = radius;
+            this.isEven = isEven;
+            this.offset = offset.Clone();
+            if(sphereRadius != null)
+            {
+                sphereRadius.SetInteger(radius);
+                sphereEven.IsChecked = isEven;
+                sphereOffset.SetValue(offset);
+            }
+        }
+
+        private void OnRadiusChanged(object sender, TextChangedEventArgs e)
+        {
+            radius = sphereRadius.GetInteger(1);
+        }
+
+        private void OnEvenChanged(object sender, RoutedEventArgs e)
+        {
+            isEven = sphereEven.IsChecked == true;
         }
     }
 }

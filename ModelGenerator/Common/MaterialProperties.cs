@@ -61,5 +61,21 @@ namespace ModelGenerator
                 ApplyFaceProperties(pair.Value);
             }
         }
+
+        public MaterialProperties Clone()
+        {
+            var material = new MaterialProperties();
+            material.name = name;
+            material.texture = texture;
+            material.shade = shade;
+            material.glow = glow;
+            material.climateColorMap = climateColorMap;
+            material.seasonColorMap = seasonColorMap;
+            material.renderPass = renderPass;
+            material.zOffset = zOffset;
+            material.waterWave = waterWave;
+            material.reflective = reflective;
+            return material;
+        }
     }
 }
