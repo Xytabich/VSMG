@@ -1,7 +1,6 @@
 ﻿using ModelGenerator;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Controls;
 using Vintagestory.API.Common;
 
 namespace CylinderGenerator
@@ -10,9 +9,9 @@ namespace CylinderGenerator
     {
         protected CylinderGeneratorPanel panel;
 
-        public virtual void ShowPanel(Panel parent)
+        public virtual void ShowPanel(EditorContext context)
         {
-            parent.Children.Add(panel = new CylinderGeneratorPanel());
+            context.parent.Children.Add(panel = new CylinderGeneratorPanel());
         }
 
         public virtual void OnHide()
@@ -20,7 +19,7 @@ namespace CylinderGenerator
             panel = null;
         }
 
-        public void Generate(Shape shape)
+        public void Generate(GeneratorContext context)
         {
             var offset = panel.GetOffset();
             var voxels = GenerateVoxels(panel.GetRadius(), panel.GetLength(), panel.GetAxis(), panel.IsEven());
@@ -31,6 +30,7 @@ namespace CylinderGenerator
             ModelUtils.MergeNeighbors(cuboids, sizeX, sizeY, sizeZ);
             ModelUtils.RemoveInvisibleCuboids(cuboids, sizeX, sizeY, sizeZ);
 
+            var shape = context.shape;
             var exported = new HashSet<CuboidInfo>();
             var elements = new List<ShapeElement>();
             string material = shape.Textures.Count > 0 ? ("#" + shape.Textures.First().Key) : "#null";

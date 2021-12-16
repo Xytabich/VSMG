@@ -76,7 +76,7 @@ namespace ModelGenerator
                 {
                     shape.Textures[texture.keyText.Text.Trim()] = new AssetLocation(texture.pathText.Text.Trim().Replace('\\', '/'));
                 }
-                selectedGenerator.instance.Generate(shape);
+                selectedGenerator.instance.Generate(new GeneratorContext() { shape = shape });
                 if(applyRoot.IsChecked == true)
                 {
                     var offset = rootOffset.GetValue();
@@ -126,7 +126,7 @@ namespace ModelGenerator
                 generatorPanel.Children.Clear();
             }
             selectedGenerator = generators[index];
-            selectedGenerator.instance.ShowPanel(generatorPanel);
+            selectedGenerator.instance.ShowPanel(new EditorContext() { parent = generatorPanel });
         }
 
         private void AddEmptyTexture(object sender, RoutedEventArgs e)

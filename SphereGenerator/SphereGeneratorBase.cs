@@ -1,7 +1,6 @@
 ﻿using ModelGenerator;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Controls;
 using Vintagestory.API.Common;
 
 namespace SphereGenerator
@@ -10,9 +9,9 @@ namespace SphereGenerator
     {
         protected SphereGeneratorPanel panel;
 
-        public virtual void ShowPanel(Panel parent)
+        public virtual void ShowPanel(EditorContext context)
         {
-            parent.Children.Add(panel = new SphereGeneratorPanel());
+            context.parent.Children.Add(panel = new SphereGeneratorPanel());
         }
 
         public virtual void OnHide()
@@ -20,7 +19,7 @@ namespace SphereGenerator
             panel = null;
         }
 
-        public void Generate(Shape shape)
+        public void Generate(GeneratorContext context)
         {
             var offset = panel.GetOffset();
             var voxels = GenerateVoxels(panel.GetRadius(), panel.IsEven());
@@ -29,6 +28,7 @@ namespace SphereGenerator
             ModelUtils.MergeNeighbors(cuboids, size, size, size);
             ModelUtils.RemoveInvisibleCuboids(cuboids, size, size, size);
 
+            var shape = context.shape;
             var exported = new HashSet<CuboidInfo>();
             var elements = new List<ShapeElement>();
             string material = shape.Textures.Count > 0 ? ("#" + shape.Textures.First().Key) : "#null";

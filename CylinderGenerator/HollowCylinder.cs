@@ -1,6 +1,5 @@
 ﻿using ModelGenerator;
 using System;
-using System.Windows.Controls;
 
 namespace CylinderGenerator
 {
@@ -9,9 +8,9 @@ namespace CylinderGenerator
     {
         private HollowCylinderGeneratorPanel hollowPanel;
 
-        public override void ShowPanel(Panel parent)
+        public override void ShowPanel(EditorContext context)
         {
-            parent.Children.Add(panel = hollowPanel = new HollowCylinderGeneratorPanel());
+            context.parent.Children.Add(panel = hollowPanel = new HollowCylinderGeneratorPanel());
         }
 
         public override void OnHide()

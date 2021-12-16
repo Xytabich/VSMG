@@ -1,14 +1,11 @@
-﻿using System.Windows.Controls;
-using Vintagestory.API.Common;
-
-namespace ModelGenerator
+﻿namespace ModelGenerator
 {
     public interface IShapeGenerator
     {
-        void ShowPanel(Panel parent);
+        void ShowPanel(EditorContext context);
 
         void OnHide();
 
-        void Generate(Shape shape);
+        void Generate(GeneratorContext context);
     }
 }

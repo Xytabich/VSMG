@@ -1,5 +1,4 @@
 ﻿using ModelGenerator;
-using System.Windows.Controls;
 
 namespace SphereGenerator
 {
@@ -8,9 +7,9 @@ namespace SphereGenerator
     {
         private HollowSphereGeneratorPanel hollowPanel;
 
-        public override void ShowPanel(Panel parent)
+        public override void ShowPanel(EditorContext context)
         {
-            parent.Children.Add(panel = hollowPanel = new HollowSphereGeneratorPanel());
+            context.parent.Children.Add(panel = hollowPanel = new HollowSphereGeneratorPanel());
         }
 
         public override void OnHide()
