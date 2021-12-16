@@ -7,17 +7,15 @@ namespace SphereGenerator
     [ShapeGenerator("Hollow Sphere", typeof(PresetData))]
     public class HollowSphere : SphereGeneratorBase, IPresetShapeGenerator
     {
-        private HollowSphereGeneratorPanel hollowPanel;
+        private HollowSphereGeneratorPanel hollowPanel = null;
 
         public override void ShowPanel(EditorContext context)
         {
-            context.parent.Children.Add(panel = hollowPanel = new HollowSphereGeneratorPanel());
-        }
-
-        public override void OnHide()
-        {
-            base.OnHide();
-            hollowPanel = null;
+            if(hollowPanel == null)
+            {
+                panel = hollowPanel = new HollowSphereGeneratorPanel();
+            }
+            context.parent.Children.Add(panel);
         }
 
         public void ApplyPreset(object obj)

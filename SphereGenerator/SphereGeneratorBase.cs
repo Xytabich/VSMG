@@ -6,17 +6,15 @@ namespace SphereGenerator
 {
     public abstract class SphereGeneratorBase : IShapeGenerator
     {
-        protected SphereGeneratorPanel panel;
+        protected SphereGeneratorPanel panel = null;
 
         public virtual void ShowPanel(EditorContext context)
         {
-            context.parent.Children.Add(panel = new SphereGeneratorPanel());
+            if(panel == null) panel = new SphereGeneratorPanel();
+            context.parent.Children.Add(panel);
         }
 
-        public virtual void OnHide()
-        {
-            panel = null;
-        }
+        public virtual void OnHide() { }
 
         public void Generate(GeneratorContext context)
         {

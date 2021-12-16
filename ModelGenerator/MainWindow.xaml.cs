@@ -39,7 +39,7 @@ namespace ModelGenerator
         private Dictionary<string, int> path2ShapePresetIndex = new Dictionary<string, int>();
 
         private List<string> generatorPresetNames = new List<string>();
-        private Dictionary<string, object> generatorPresets = new Dictionary<string, object>();
+        private Dictionary<string, GeneratorPresetInfo> generatorPresets = new Dictionary<string, GeneratorPresetInfo>();
 
         public MainWindow()
         {
@@ -120,6 +120,7 @@ namespace ModelGenerator
         {
             var dialog = new SaveFileDialog();
             dialog.Filter = "JSON|*.json";
+            dialog.Title = "Save shape preset";
             if(dialog.ShowDialog(GetWindow(this)) == true)
             {
                 var preset = new ShapePresetData();
@@ -155,6 +156,7 @@ namespace ModelGenerator
         {
             var dialog = new SaveFileDialog();
             dialog.Filter = "JSON|*.json";
+            dialog.Title = "Save generator preset";
             if(dialog.ShowDialog(GetWindow(this)) == true)
             {
                 var preset = (selectedGenerator.instance as IPresetShapeGenerator).CreatePreset();
@@ -173,6 +175,7 @@ namespace ModelGenerator
             var dialog = new OpenFileDialog();
             dialog.Multiselect = true;
             dialog.Filter = "JSON|*.json";
+            dialog.Title = "Load preset(s)";
             if(dialog.ShowDialog(GetWindow(this)) == true)
             {
                 foreach(var path in dialog.FileNames)
@@ -204,16 +207,26 @@ namespace ModelGenerator
         private void AddGeneratorPreset(GeneratorInfo generator, string path, object preset)
         {
             path = Path.GetFullPath(path);
-            if(!generatorPresets.ContainsKey(path))
+            if(!generatorPresets.TryGetValue(path, out var presetInfo) || presetInfo.generator != generator)
             {
+                if(presetInfo == null)
+                {
+                    presetInfo = new GeneratorPresetInfo();
+                    generatorPresets[path] = presetInfo;
+                }
+                else
+                {
+                    presetInfo.generator.presets.Remove(path);
+                }
                 generator.presets.Add(path);
                 if(generator == selectedGenerator)
                 {
                     generatorPresetNames.Add(Path.GetFileNameWithoutExtension(path));
                     generatorPreset.IsEnabled = true;
                 }
+                presetInfo.generator = generator;
             }
-            generatorPresets[path] = preset;
+            presetInfo.data = preset;
         }
 
         private void OnGeneratorPresetSelected(object sender, SelectionChangedEventArgs e)
@@ -222,7 +235,7 @@ namespace ModelGenerator
             if(index >= 0)
             {
                 generatorPreset.SelectedIndex = 0;
-                (selectedGenerator.instance as IPresetShapeGenerator).ApplyPreset(generatorPresets[selectedGenerator.presets[index]]);
+                (selectedGenerator.instance as IPresetShapeGenerator).ApplyPreset(generatorPresets[selectedGenerator.presets[index]].data);
             }
         }
 
@@ -277,6 +290,7 @@ namespace ModelGenerator
             if(selectedGenerator == null) return;
             var dialog = new SaveFileDialog();
             dialog.Filter = "JSON|*.json";
+            dialog.Title = "Save model";
             if(dialog.ShowDialog(GetWindow(this)) == true)
             {
                 var shape = new Shape() { TextureWidth = textureWidth.GetInteger(16), TextureHeight = textureHeight.GetInteger(16) };
@@ -455,6 +469,12 @@ namespace ModelGenerator
                 this.presetType = presetType;
                 this.instance = instance;
             }
+        }
+
+        private class GeneratorPresetInfo
+        {
+            public object data;
+            public GeneratorInfo generator;
         }
 
         private class TextureRow

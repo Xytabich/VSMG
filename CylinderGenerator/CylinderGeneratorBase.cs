@@ -6,17 +6,15 @@ namespace CylinderGenerator
 {
     public abstract class CylinderGeneratorBase : IShapeGenerator
     {
-        protected CylinderGeneratorPanel panel;
+        protected CylinderGeneratorPanel panel = null;
 
         public virtual void ShowPanel(EditorContext context)
         {
-            context.parent.Children.Add(panel = new CylinderGeneratorPanel());
+            if(panel == null) panel = new CylinderGeneratorPanel();
+            context.parent.Children.Add(panel);
         }
 
-        public virtual void OnHide()
-        {
-            panel = null;
-        }
+        public virtual void OnHide() { }
 
         public void Generate(GeneratorContext context)
         {

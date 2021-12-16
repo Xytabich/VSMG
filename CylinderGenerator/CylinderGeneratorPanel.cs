@@ -98,7 +98,7 @@ namespace CylinderGenerator
 
         private void OnLengthChanged(object sender, TextChangedEventArgs e)
         {
-            length = cylinderRadius.GetInteger(1);
+            length = cylinderLength.GetInteger(1);
         }
 
         private void OnAxisChanged(object sender, SelectionChangedEventArgs e)

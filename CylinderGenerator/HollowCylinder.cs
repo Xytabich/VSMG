@@ -8,17 +8,15 @@ namespace CylinderGenerator
     [ShapeGenerator("Hollow Cylinder", typeof(PresetData))]
     public class HollowCylinder : CylinderGeneratorBase, IPresetShapeGenerator
     {
-        private HollowCylinderGeneratorPanel hollowPanel;
+        private HollowCylinderGeneratorPanel hollowPanel = null;
 
         public override void ShowPanel(EditorContext context)
         {
-            context.parent.Children.Add(panel = hollowPanel = new HollowCylinderGeneratorPanel());
-        }
-
-        public override void OnHide()
-        {
-            base.OnHide();
-            hollowPanel = null;
+            if(hollowPanel == null)
+            {
+                panel = hollowPanel = new HollowCylinderGeneratorPanel();
+            }
+            context.parent.Children.Add(panel);
         }
 
         public void ApplyPreset(object obj)
