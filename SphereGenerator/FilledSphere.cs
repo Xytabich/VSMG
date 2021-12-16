@@ -16,7 +16,7 @@ namespace SphereGenerator
         public object CreatePreset()
         {
             return new PresetData() {
-                offset = panel.GetOffset(),
+                offset = panel.GetOffset().Clone(),
                 radius = panel.GetRadius(),
                 isEven = panel.IsEven()
             };

@@ -28,7 +28,7 @@ namespace CylinderGenerator
         public object CreatePreset()
         {
             return new PresetData() {
-                offset = hollowPanel.GetOffset(),
+                offset = hollowPanel.GetOffset().Clone(),
                 outerRadius = hollowPanel.GetRadius(),
                 innerRadius = hollowPanel.GetInnerRadius(),
                 length = hollowPanel.GetLength(),

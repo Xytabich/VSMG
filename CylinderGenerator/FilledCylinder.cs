@@ -17,7 +17,7 @@ namespace CylinderGenerator
         public object CreatePreset()
         {
             return new PresetData() {
-                offset = panel.GetOffset(),
+                offset = panel.GetOffset().Clone(),
                 radius = panel.GetRadius(),
                 length = panel.GetLength(),
                 axis = panel.GetAxis(),
