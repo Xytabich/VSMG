@@ -26,6 +26,13 @@ namespace ModelGenerator
             return value;
         }
 
+        public static short GetShort(this TextBox field, short def = default)
+        {
+            short value;
+            if(!short.TryParse(field.Text.Trim(), out value)) value = def;
+            return value;
+        }
+
         public static double GetDouble(this TextBox field, double def = default)
         {
             double value;

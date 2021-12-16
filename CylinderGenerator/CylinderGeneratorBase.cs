@@ -33,7 +33,7 @@ namespace CylinderGenerator
             var shape = context.shape;
             var exported = new HashSet<CuboidInfo>();
             var elements = new List<ShapeElement>();
-            string material = shape.Textures.Count > 0 ? ("#" + shape.Textures.First().Key) : "#null";
+            var material = context.materials.Count > 0 ? context.materials[0] : null;
 
             int counter = 0;
             for(int x = 0; x < sizeX; x++)
@@ -47,9 +47,16 @@ namespace CylinderGenerator
                         {
                             var element = ModelUtils.CuboidToShapeElement(voxel, offset, shape.TextureWidth, shape.TextureHeight);
                             element.Name = "box" + (counter++);
-                            foreach(var face in element.Faces)
+                            if(material != null)
                             {
-                                face.Value.Texture = material;
+                                material.ApplyAllProperties(element);
+                            }
+                            else
+                            {
+                                foreach(var face in element.Faces)
+                                {
+                                    face.Value.Texture = "#null";
+                                }
                             }
                             elements.Add(element);
                         }

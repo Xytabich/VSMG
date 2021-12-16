@@ -28,62 +28,72 @@
         <Label Content="Shape settings" Grid.Column="2" Padding="6,4,6,4"/>
 
         <GridSplitter Width="3" ShowsPreview="False" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center"/>
-        <DockPanel x:Name="generatorPanel" Grid.Row="1" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto"/>
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <DockPanel x:Name="generatorPanel"/>
+        </ScrollViewer>
         <ComboBox x:Name="generatorSelect" Grid.Row="2"/>
-        <StackPanel x:Name="settingsPanel" Grid.Row="1" Grid.Column="2" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto">
-            <Expander Header="Texture size">
-                <Grid Margin="26,0,0,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="120"></ColumnDefinition>
-                        <ColumnDefinition></ColumnDefinition>
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="26"></RowDefinition>
-                        <RowDefinition Height="26"></RowDefinition>
-                    </Grid.RowDefinitions>
-                    <Label Content="Width"/>
-                    <Label Content="Height" Grid.Row="1"/>
-                    <TextBox x:Name="textureWidth" Text="16" TextWrapping="Wrap" Grid.Column="1" Padding="4,4,4,4"/>
-                    <TextBox x:Name="textureHeight" Text="16" TextWrapping="Wrap" Grid.Column="1" Grid.Row="1" Padding="4,4,4,4"/>
-                </Grid>
-            </Expander>
-            <Expander Header="Textures">
-                <Grid Margin="26,0,0,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="120"></ColumnDefinition>
-                        <ColumnDefinition></ColumnDefinition>
-                        <ColumnDefinition Width="26"></ColumnDefinition>
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition></RowDefinition>
-                        <RowDefinition Height="20"></RowDefinition>
-                    </Grid.RowDefinitions>
-                    <StackPanel x:Name="textureListKeys"></StackPanel>
-                    <StackPanel x:Name="textureListPaths" Grid.Column="1"></StackPanel>
-                    <StackPanel x:Name="textureListButtons" Grid.Column="2"></StackPanel>
-                    <Button x:Name="textureListAdd" Content="Add" Grid.Row="1" Grid.ColumnSpan="3"/>
-                </Grid>
-            </Expander>
-            <Expander Header="Root object">
-                <Grid Margin="26,0,0,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="120"></ColumnDefinition>
-                        <ColumnDefinition></ColumnDefinition>
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="26"></RowDefinition>
-                        <RowDefinition Height="26"></RowDefinition>
-                        <RowDefinition Height="26"></RowDefinition>
-                    </Grid.RowDefinitions>
-                    <Label Content="Apply root"/>
-                    <Label Content="Offset" Grid.Row="1"/>
-                    <Label Content="Offset children" Grid.Row="2"/>
-                    <CheckBox x:Name="applyRoot" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Left"/>
-                    <local:Vec3dBox x:Name="rootOffset" Grid.Column="1" Grid.Row="1" IsEnabled="{Binding ElementName=applyRoot, Path=IsChecked}"/>
-                    <CheckBox x:Name="offsetChildren" Grid.Column="1" Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Left" IsEnabled="{Binding ElementName=applyRoot, Path=IsChecked}"/>
-                </Grid>
-            </Expander>
-        </StackPanel>
+        <ScrollViewer Grid.Row="1" Grid.Column="2" VerticalScrollBarVisibility="Auto">
+            <StackPanel x:Name="settingsPanel">
+                <Expander Header="Texture size">
+                    <Grid Margin="26,0,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="120"></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="26"></RowDefinition>
+                            <RowDefinition Height="26"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Label Content="Width"/>
+                        <Label Content="Height" Grid.Row="1"/>
+                        <TextBox x:Name="textureWidth" Text="16" TextWrapping="Wrap" Grid.Column="1" Padding="4,4,4,4"/>
+                        <TextBox x:Name="textureHeight" Text="16" TextWrapping="Wrap" Grid.Column="1" Grid.Row="1" Padding="4,4,4,4"/>
+                    </Grid>
+                </Expander>
+                <Expander Header="Textures">
+                    <Grid Margin="26,0,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="120"></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition Width="26"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition Height="20"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <StackPanel x:Name="textureListKeys"></StackPanel>
+                        <StackPanel x:Name="textureListPaths" Grid.Column="1"></StackPanel>
+                        <StackPanel x:Name="textureListButtons" Grid.Column="2"></StackPanel>
+                        <Button x:Name="textureListAdd" Content="Add" Grid.Row="1" Grid.ColumnSpan="3"/>
+                    </Grid>
+                </Expander>
+                <Expander Header="Root object">
+                    <Grid Margin="26,0,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="120"></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="26"></RowDefinition>
+                            <RowDefinition Height="26"></RowDefinition>
+                            <RowDefinition Height="26"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Label Content="Apply root"/>
+                        <Label Content="Offset" Grid.Row="1"/>
+                        <Label Content="Offset children" Grid.Row="2"/>
+                        <CheckBox x:Name="applyRoot" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                        <local:Vec3dBox x:Name="rootOffset" Grid.Column="1" Grid.Row="1" IsEnabled="{Binding ElementName=applyRoot, Path=IsChecked}"/>
+                        <CheckBox x:Name="offsetChildren" Grid.Column="1" Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Left" IsEnabled="{Binding ElementName=applyRoot, Path=IsChecked}"/>
+                    </Grid>
+                </Expander>
+                <Expander Header="Material presets">
+                    <StackPanel Margin="26,0,0,0">
+                        <StackPanel x:Name="materialList"></StackPanel>
+                        <Button x:Name="materialListAdd" Content="Add" Height="20"/>
+                    </StackPanel>
+                </Expander>
+            </StackPanel>
+        </ScrollViewer>
         <Button x:Name="generate" Grid.Row="2" Grid.Column="2" Content="Generate"/>
     </Grid>
 </Window>

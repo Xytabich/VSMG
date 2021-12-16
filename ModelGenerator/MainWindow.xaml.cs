@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Reflection;
 using System.Windows;
@@ -18,10 +19,28 @@ namespace ModelGenerator
         private GeneratorInfo selectedGenerator = null;
 
         private List<TextureRow> textures = new List<TextureRow>();
+        private List<MaterialRow> materials = new List<MaterialRow>();
+
+        private ObservableCollection<string> textureKeysObservable = new ObservableCollection<string>();
+        private ObservableCollection<MaterialProperties> materialsObservable;
+        private IObservableReadonlyList<MaterialProperties> materialsObservableReadonly;
 
         public MainWindow()
         {
             InitializeComponent();
+            ControlUtils.InitIntegerField(textureWidth);
+            ControlUtils.InitIntegerField(textureHeight);
+
+            materialsObservable = new ObservableCollection<MaterialProperties>();
+            materialsObservableReadonly = ORLPUtility.Get(materialsObservable);
+
+            AddTextureRow("material", "block/stone/rock/granite1");
+            AddMaterialRow(new MaterialProperties() { name = "Material", texture = "material" });
+
+            textureListAdd.Click += AddEmptyTexture;
+            materialListAdd.Click += AddMaterial;
+            generate.Click += OnGenerate;
+
             var dir = new DirectoryInfo(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "generators"));
             if(!dir.Exists) dir.Create();
             foreach(var module in dir.GetFiles("*.dll", SearchOption.TopDirectoryOnly))
@@ -36,7 +55,6 @@ namespace ModelGenerator
                     }
                 }
             }
-            generate.Click += OnGenerate;
             for(int i = 0; i < generators.Count; i++)
             {
                 generatorSelect.Items.Add(new ComboBoxItem() { Content = generators[i].name });
@@ -51,10 +69,6 @@ namespace ModelGenerator
             {
                 generatorSelect.SelectedIndex = -1;
             }
-            AddTextureRow("material", "block/stone/rock/granite1");
-            textureListAdd.Click += AddEmptyTexture;
-            ControlUtils.InitIntegerField(textureWidth);
-            ControlUtils.InitIntegerField(textureHeight);
         }
 
         protected override void OnClosed(EventArgs e)
@@ -76,7 +90,7 @@ namespace ModelGenerator
                 {
                     shape.Textures[texture.keyText.Text.Trim()] = new AssetLocation(texture.pathText.Text.Trim().Replace('\\', '/'));
                 }
-                selectedGenerator.instance.Generate(new GeneratorContext() { shape = shape });
+                selectedGenerator.instance.Generate(new GeneratorContext() { shape = shape, materials = materialsObservable });
                 if(applyRoot.IsChecked == true)
                 {
                     var offset = rootOffset.GetValue();
@@ -126,7 +140,47 @@ namespace ModelGenerator
                 generatorPanel.Children.Clear();
             }
             selectedGenerator = generators[index];
-            selectedGenerator.instance.ShowPanel(new EditorContext() { parent = generatorPanel });
+            selectedGenerator.instance.ShowPanel(new EditorContext() { parent = generatorPanel, materials = materialsObservableReadonly });
+        }
+
+        private void AddMaterial(object sender, RoutedEventArgs e)
+        {
+            AddMaterialRow(new MaterialProperties() { name = "Material", texture = textures.Count > 0 ? textures[0].keyText.Text.Trim() : "" });
+        }
+
+        private void AddMaterialRow(MaterialProperties material)
+        {
+            Button removeBtn = new Button() { Content = "X", Width = 26, Height = 22, VerticalAlignment = VerticalAlignment.Top, HorizontalAlignment = HorizontalAlignment.Right };
+            DockPanel.SetDock(removeBtn, Dock.Right);
+            MaterialPanel panel = new MaterialPanel(material, textureKeysObservable);
+
+            var root = new DockPanel();
+            root.Children.Add(removeBtn);
+            root.Children.Add(panel);
+            materialList.Children.Add(root);
+            materials.Add(new MaterialRow(panel, removeBtn, root, RemoveMaterial, OnMaterialNameChanged));
+            materialsObservable.Add(material);
+        }
+
+        private void OnMaterialNameChanged(MaterialRow row)
+        {
+            int index = materials.IndexOf(row);
+            if(index >= 0)
+            {
+                materialsObservable[index] = materialsObservable[index];
+            }
+        }
+
+        private void RemoveMaterial(MaterialRow row)
+        {
+            int index = materials.IndexOf(row);
+            if(index >= 0)
+            {
+                materials.RemoveAt(index);
+                materialsObservable.RemoveAt(index);
+                row.panel.Dispose();
+                materialList.Children.Remove(row.root);
+            }
         }
 
         private void AddEmptyTexture(object sender, RoutedEventArgs e)
@@ -145,15 +199,26 @@ namespace ModelGenerator
             pathText.Text = path;
             removeBtn.Content = "X";
             keyText.Height = pathText.Height = removeBtn.Height = 20;
-            textures.Add(new TextureRow(keyText, pathText, removeBtn, RemoveTexture));
+            textures.Add(new TextureRow(keyText, pathText, removeBtn, RemoveTexture, OnTextureKeyChanged));
+            textureKeysObservable.Add(key.Trim());
+        }
+
+        private void OnTextureKeyChanged(TextureRow row)
+        {
+            textureKeysObservable[textures.IndexOf(row)] = row.keyText.Text.Trim();
         }
 
         private void RemoveTexture(TextureRow row)
         {
-            textures.Remove(row);
-            textureListKeys.Children.Remove(row.keyText);
-            textureListPaths.Children.Remove(row.pathText);
-            textureListButtons.Children.Remove(row.removeBtn);
+            int index = textures.IndexOf(row);
+            if(index >= 0)
+            {
+                textures.RemoveAt(index);
+                textureListKeys.Children.Remove(row.keyText);
+                textureListPaths.Children.Remove(row.pathText);
+                textureListButtons.Children.Remove(row.removeBtn);
+                textureKeysObservable.RemoveAt(index);
+            }
         }
 
         private class GeneratorInfo
@@ -175,14 +240,53 @@ namespace ModelGenerator
             public readonly Button removeBtn;
 
             private Action<TextureRow> onRemove;
+            private Action<TextureRow> onChanged;
 
-            public TextureRow(TextBox keyText, TextBox pathText, Button removeBtn, Action<TextureRow> onRemove)
+            public TextureRow(TextBox keyText, TextBox pathText, Button removeBtn, Action<TextureRow> onRemove, Action<TextureRow> onChanged)
             {
                 this.keyText = keyText;
                 this.pathText = pathText;
                 this.removeBtn = removeBtn;
                 this.onRemove = onRemove;
+                this.onChanged = onChanged;
                 removeBtn.Click += OnRemove;
+                keyText.TextChanged += OnChanged;
+            }
+
+            private void OnChanged(object sender, TextChangedEventArgs e)
+            {
+                onChanged.Invoke(this);
+            }
+
+            private void OnRemove(object sender, RoutedEventArgs e)
+            {
+                onRemove.Invoke(this);
+            }
+        }
+
+        private class MaterialRow
+        {
+            public MaterialPanel panel;
+            public Button removeBtn;
+            public Panel root;
+
+            private Action<MaterialRow> onRemove;
+            private Action<MaterialRow> onChanged;
+
+            public MaterialRow(MaterialPanel panel, Button removeBtn, Panel root, Action<MaterialRow> onRemove, Action<MaterialRow> onChanged)
+            {
+                this.panel = panel;
+                this.removeBtn = removeBtn;
+                this.root = root;
+                this.onRemove = onRemove;
+                this.onChanged = onChanged;
+                panel.onNameChanged = OnChanged;
+                removeBtn.Click += OnRemove;
+            }
+
+            private void OnChanged()
+            {
+                onChanged.Invoke(this);
             }
 
             private void OnRemove(object sender, RoutedEventArgs e)

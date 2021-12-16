@@ -14,10 +14,67 @@
                             <ColumnDefinition></ColumnDefinition>
                             <ColumnDefinition></ColumnDefinition>
                         </Grid.ColumnDefinitions>
-                        <TextBox x:Name="x" Text="0" Padding="4,4,4,4" Grid.Column="0"/>
-                        <TextBox x:Name="y" Text="0" Padding="4,4,4,4" Grid.Column="1"/>
-                        <TextBox x:Name="z" Text="0" Padding="4,4,4,4" Grid.Column="2"/>
+                        <TextBox x:Name="x" Text="0" Padding="4,3,4,3" Grid.Column="0"/>
+                        <TextBox x:Name="y" Text="0" Padding="4,3,4,3" Grid.Column="1"/>
+                        <TextBox x:Name="z" Text="0" Padding="4,3,4,3" Grid.Column="2"/>
                     </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="{x:Type local:MaterialPanel}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type local:MaterialPanel}">
+                    <Expander Header="{Binding ElementName=materialName, Path=Text}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="120"></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="24"></RowDefinition>
+                                <RowDefinition Height="24"></RowDefinition>
+                                <RowDefinition Height="24"></RowDefinition>
+                                <RowDefinition Height="24"></RowDefinition>
+                                <RowDefinition Height="24"></RowDefinition>
+                                <RowDefinition Height="24"></RowDefinition>
+                                <RowDefinition Height="24"></RowDefinition>
+                                <RowDefinition Height="24"></RowDefinition>
+                                <RowDefinition Height="24"></RowDefinition>
+                                <RowDefinition Height="24"></RowDefinition>
+                            </Grid.RowDefinitions>
+                            <Label Padding="6,4,6,4" Content="Name"/>
+                            <Label Padding="6,4,6,4" Content="Texture" Grid.Row="1"/>
+                            <Label Padding="6,4,6,4" Content="Shade" Grid.Row="2"/>
+                            <Label Padding="6,4,6,4" Content="Glow" Grid.Row="3"/>
+                            <Label Padding="6,4,6,4" Content="ClimateColorMap" Grid.Row="4"/>
+                            <Label Padding="6,4,6,4" Content="SeasonColorMap " Grid.Row="5"/>
+                            <Label Padding="6,4,6,4" Content="RenderPass" Grid.Row="6"/>
+                            <Label Padding="6,4,6,4" Content="ZOffset" Grid.Row="7"/>
+                            <Label Padding="6,4,6,4" Content="WaterWave" Grid.Row="8"/>
+                            <Label Padding="6,4,6,4" Content="Reflective" Grid.Row="9"/>
+                            <TextBox x:Name="materialName" Text="Material" Padding="4,3,4,3" Grid.Column="1"/>
+                            <ComboBox x:Name="materialTexture" Padding="4,3,4,3" Grid.Row="1" Grid.Column="1"></ComboBox>
+                            <CheckBox x:Name="materialShade" VerticalAlignment="Center" HorizontalAlignment="Left" IsChecked="False" Grid.Row="2" Grid.Column="1"/>
+                            <TextBox x:Name="materialGlow" Text="0" Padding="4,3,4,3" Grid.Row="3" Grid.Column="1"/>
+                            <TextBox x:Name="materialClimateColorMap" Text="" Padding="4,3,4,3" Grid.Row="4" Grid.Column="1"/>
+                            <TextBox x:Name="materialSeasonColorMap" Text="" Padding="4,3,4,3" Grid.Row="5" Grid.Column="1"/>
+                            <ComboBox x:Name="materialRenderPass" SelectedIndex="0" Grid.Row="6" Grid.Column="1">
+                                <TextBlock ToolTip="Backfaced culled, no alpha testing, alpha discard">Opaque</TextBlock>
+                                <TextBlock ToolTip="Backfaced not culled, no alpha blended but alpha discard">OpaqueNoCull</TextBlock>
+                                <TextBlock ToolTip="Backfaced not culled, alpha blended and alpha discard">BlendNoCull</TextBlock>
+                                <TextBlock ToolTip="Uses a special rendering system called Weighted Blended Order Independent Transparency for half transparent blocks">Transparent</TextBlock>
+                                <TextBlock ToolTip="Same as OpaqueNoCull but with a few quirks">Liquid</TextBlock>
+                                <TextBlock ToolTip="Special render pass for top soil only in order to have climated tinted grass half transparently overlaid over an opaque block">TopSoil</TextBlock>
+                                <TextBlock ToolTip="Special render pass for meta blocks">Meta</TextBlock>
+                            </ComboBox>
+                            <TextBox x:Name="materialZOffset" Text="0" Padding="4,3,4,3" Grid.Row="7" Grid.Column="1"/>
+                            <CheckBox x:Name="materialWaterWave" VerticalAlignment="Center" HorizontalAlignment="Left" IsChecked="False" Grid.Row="8" Grid.Column="1"/>
+                            <CheckBox x:Name="materialReflective" VerticalAlignment="Center" HorizontalAlignment="Left" IsChecked="False" Grid.Row="9" Grid.Column="1"/>
+                        </Grid>
+                    </Expander>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
