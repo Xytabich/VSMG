@@ -1,5 +1,5 @@
 # VSMG
-Generator of simple models for VS Model Creator. Creates only basic shapes and assigns uvs and textures, the rest of the refinement is done in VSMC.
+Generator of simple models for VS Model Creator. Current generators only create basic shapes and further refinement can be done in VSMC.
 
 ![img](preview.png)
 
