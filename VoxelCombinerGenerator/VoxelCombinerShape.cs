@@ -1,6 +1,5 @@
 ﻿using ModelGenerator;
 using Newtonsoft.Json;
-using System.Collections.Generic;
 using Vintagestory.API.MathTools;
 
 namespace VoxelCombinerGenerator
@@ -21,7 +20,7 @@ namespace VoxelCombinerGenerator
         public object CreatePreset()
         {
             return new PresetData() {
-                offset = panel.GetOffset(),
+                offset = panel.GetOffset().Clone(),
                 data = (VoxelCombiner.GeneratorSave)VoxelCombiner.CreateSaveData(instance)
             };
         }
