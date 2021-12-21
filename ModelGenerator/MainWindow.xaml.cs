@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Reflection;
+using System.Runtime.Serialization.Formatters;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -163,7 +164,8 @@ namespace ModelGenerator
 
                 File.WriteAllText(dialog.FileName, JsonConvert.SerializeObject(PresetUtility.Get(GENERATOR_PRESET_TYPE, selectedGenerator.key, preset), new JsonSerializerSettings {
                     ContractResolver = new CamelCasePropertyNamesContractResolver(),
-                    Formatting = Formatting.Indented
+                    Formatting = Formatting.Indented,
+                    TypeNameAssemblyFormat = FormatterAssemblyStyle.Full
                 }));
 
                 AddGeneratorPreset(selectedGenerator, dialog.FileName, preset);
@@ -178,6 +180,11 @@ namespace ModelGenerator
             dialog.Title = "Load preset(s)";
             if(dialog.ShowDialog(GetWindow(this)) == true)
             {
+                var serializer = JsonSerializer.Create(new JsonSerializerSettings {
+                    ContractResolver = new CamelCasePropertyNamesContractResolver(),
+                    Formatting = Formatting.Indented,
+                    TypeNameAssemblyFormat = FormatterAssemblyStyle.Full
+                });
                 foreach(var path in dialog.FileNames)
                 {
                     try
@@ -188,7 +195,7 @@ namespace ModelGenerator
                             switch((string)type)
                             {
                                 case SHAPE_PRESET_TYPE:
-                                    AddShapePreset(path, json["data"].ToObject<ShapePresetData>());
+                                    AddShapePreset(path, json["data"].ToObject<ShapePresetData>(serializer));
                                     break;
                                 case GENERATOR_PRESET_TYPE:
                                     if(key2Generator.TryGetValue((string)json["generator"], out var generator) && generator.presetType != null)

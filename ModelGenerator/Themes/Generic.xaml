@@ -3,11 +3,10 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="clr-namespace:ModelGenerator">
 
-
-    <Style TargetType="{x:Type local:Vec3dBox}">
+    <Style TargetType="{x:Type local:Vec3BoxBase}">
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="{x:Type local:Vec3dBox}">
+                <ControlTemplate TargetType="{x:Type local:Vec3BoxBase}">
                     <Grid Height="26">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition></ColumnDefinition>
