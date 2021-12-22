@@ -46,29 +46,31 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type local:VoxelGeneratorSettingsPanel}">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="120"></ColumnDefinition>
-                            <ColumnDefinition></ColumnDefinition>
-                            <ColumnDefinition Width="26"></ColumnDefinition>
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition></RowDefinition>
-                            <RowDefinition></RowDefinition>
-                        </Grid.RowDefinitions>
-                        <Button x:Name="generatorRemove" Height="22" Content="X" Grid.Column="2" VerticalAlignment="Top"/>
-                        <StackPanel>
-                            <Label Content="Combine" Height="26"/>
-                            <Label Content="Offset" Height="26"/>
-                            <Label x:Name="generatorMaterialLabel" Content="Material" Height="26" Visibility="Hidden"/>
-                        </StackPanel>
-                        <StackPanel Grid.Column="1">
-                            <ComboBox x:Name="generatorCombine" Height="26"></ComboBox>
-                            <main:Vec3iBox x:Name="generatorOffset" Height="26"></main:Vec3iBox>
-                            <ComboBox x:Name="generatorMaterial" Height="26" Visibility="Hidden"></ComboBox>
-                        </StackPanel>
-                        <Expander x:Name="generatorAnchorExpander" Grid.Row="1" Grid.ColumnSpan="3"></Expander>
-                    </Grid>
+                    <Border BorderThickness="1" BorderBrush="Black">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="120"></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition Width="26"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition></RowDefinition>
+                                <RowDefinition></RowDefinition>
+                            </Grid.RowDefinitions>
+                            <Button x:Name="generatorRemove" Height="22" Content="X" Grid.Column="2" VerticalAlignment="Top"/>
+                            <StackPanel>
+                                <Label Content="Combine" Height="26"/>
+                                <Label Content="Offset" Height="26"/>
+                                <Label x:Name="generatorMaterialLabel" Content="Material" Height="26" Visibility="Hidden"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1">
+                                <ComboBox x:Name="generatorCombine" Height="26"></ComboBox>
+                                <main:Vec3iBox x:Name="generatorOffset" Height="26"></main:Vec3iBox>
+                                <ComboBox x:Name="generatorMaterial" Height="26" Visibility="Hidden"></ComboBox>
+                            </StackPanel>
+                            <Expander x:Name="generatorAnchorExpander" Grid.Row="1" Grid.ColumnSpan="3"></Expander>
+                        </Grid>
+                    </Border>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

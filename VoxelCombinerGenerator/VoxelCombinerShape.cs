@@ -51,21 +51,23 @@ namespace VoxelCombinerGenerator
             var voxels = VoxelCombiner.Generate(new VoxelGeneratorContext() { materials = context.materials, generatorData = instance });
 
             var offset = panel.GetOffset();
-            int size = voxels.GetLength(0);
-            var cuboids = VoxelModelUtils.VoxelsToCuboids(voxels, context.materials, true, size, size, size);
-            VoxelModelUtils.MergeNeighbors(cuboids, size, size, size);
-            ModelUtils.RemoveInvisibleCuboids(cuboids, size, size, size);
+            int sizeX = voxels.GetLength(0);
+            int sizeY = voxels.GetLength(1);
+            int sizeZ = voxels.GetLength(2);
+            var cuboids = VoxelModelUtils.VoxelsToCuboids(voxels, context.materials, true, sizeX, sizeY, sizeZ);
+            VoxelModelUtils.MergeNeighbors(cuboids, sizeX, sizeY, sizeZ);
+            ModelUtils.RemoveInvisibleCuboids(cuboids, sizeX, sizeY, sizeZ);
 
             var shape = context.shape;
             var exported = new HashSet<CuboidInfo>();
             var elements = new List<ShapeElement>();
 
             int counter = 0;
-            for(int x = 0; x < size; x++)
+            for(int x = 0; x < sizeX; x++)
             {
-                for(int y = 0; y < size; y++)
+                for(int y = 0; y < sizeY; y++)
                 {
-                    for(int z = 0; z < size; z++)
+                    for(int z = 0; z < sizeZ; z++)
                     {
                         var voxel = cuboids[x, y, z];
                         if(voxel != null && exported.Add(voxel))

@@ -110,10 +110,13 @@ namespace VoxelCombinerGenerator
 
         public void SetOffset(Vec3i offset)
         {
-            this.offset = offset.Clone();
             if(generatorOffset != null)
             {
                 generatorOffset.SetValue(offset);
+            }
+            else
+            {
+                this.offset = offset.Clone();
             }
         }
 

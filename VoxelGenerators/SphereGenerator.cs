@@ -31,7 +31,7 @@ namespace VoxelGenerators
             return ((GeneratorData)context.generatorData).Generate(context.materialIndex);
         }
 
-        private static int[,,] GenerateVoxels(int material, int radius, bool even)
+        private static int[,,] GenerateVoxels(int radius, bool even, int material)
         {
             if(even)
             {
@@ -104,7 +104,7 @@ namespace VoxelGenerators
 
             public int[,,] Generate(int materialIndex)
             {
-                return GenerateVoxels(materialIndex, panel.GetRadius(), panel.IsEven());
+                return GenerateVoxels(panel.GetRadius(), panel.IsEven(), materialIndex);
             }
         }
     }
