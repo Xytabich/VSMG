@@ -51,7 +51,7 @@ namespace ModelGenerator
 
             materialName.Text = material.name ?? "";
             materialTexture.IsSynchronizedWithCurrentItem = true;
-            materialTexture.ItemsSource = textureKeys;
+            materialTexture.ItemsSource = new ReadOnlyObservableCollection<string>(textureKeys);
             materialTexture.SelectedIndex = string.IsNullOrEmpty(material.texture) ? -1 : textureKeys.IndexOf(material.texture);
             materialShade.IsChecked = material.shade;
             materialGlow.InitIntegerField();

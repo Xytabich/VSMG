@@ -74,7 +74,9 @@ namespace VoxelGenerators
         [JsonObject]
         private class SaveData
         {
+            [JsonProperty]
             public int radius = 1;
+            [JsonProperty]
             public bool isEven = true;
         }
 

@@ -1,5 +1,7 @@
 ﻿using ModelGenerator;
 using Newtonsoft.Json;
+using System.Collections.Generic;
+using Vintagestory.API.Common;
 using Vintagestory.API.MathTools;
 
 namespace VoxelCombinerGenerator
@@ -46,6 +48,48 @@ namespace VoxelCombinerGenerator
 
         public void Generate(GeneratorContext context)
         {
+            var voxels = VoxelCombiner.Generate(new VoxelGeneratorContext() { materials = context.materials, generatorData = instance });
+
+            var offset = panel.GetOffset();
+            int size = voxels.GetLength(0);
+            var cuboids = VoxelModelUtils.VoxelsToCuboids(voxels, context.materials, true, size, size, size);
+            VoxelModelUtils.MergeNeighbors(cuboids, size, size, size);
+            ModelUtils.RemoveInvisibleCuboids(cuboids, size, size, size);
+
+            var shape = context.shape;
+            var exported = new HashSet<CuboidInfo>();
+            var elements = new List<ShapeElement>();
+
+            int counter = 0;
+            for(int x = 0; x < size; x++)
+            {
+                for(int y = 0; y < size; y++)
+                {
+                    for(int z = 0; z < size; z++)
+                    {
+                        var voxel = cuboids[x, y, z];
+                        if(voxel != null && exported.Add(voxel))
+                        {
+                            var element = ModelUtils.CuboidToShapeElement(voxel, offset, shape.TextureWidth, shape.TextureHeight);
+                            element.Name = "box" + (counter++);
+                            var material = context.materials.Count > voxel.material ? context.materials[voxel.material] : null;
+                            if(material != null)
+                            {
+                                material.ApplyAllProperties(element);
+                            }
+                            else
+                            {
+                                foreach(var face in element.Faces)
+                                {
+                                    face.Value.Texture = "#null";
+                                }
+                            }
+                            elements.Add(element);
+                        }
+                    }
+                }
+            }
+            shape.Elements = elements.ToArray();
         }
 
         [JsonObject]

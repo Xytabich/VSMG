@@ -472,7 +472,7 @@ namespace VoxelCombinerGenerator
 
             public override bool CanConvert(Type objectType)
             {
-                return objectType == typeof(GeneratorSave.SourceGenerator);
+                return true;
             }
 
             public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
@@ -541,9 +541,9 @@ namespace VoxelCombinerGenerator
                 int minX = Math.Min(x, other.x);
                 int minY = Math.Min(y, other.y);
                 int minZ = Math.Min(z, other.z);
-                int maxX = Math.Min(x + sizeX, other.x + other.sizeX);
-                int maxY = Math.Min(y + sizeY, other.y + other.sizeY);
-                int maxZ = Math.Min(z + sizeZ, other.z + other.sizeZ);
+                int maxX = Math.Max(x + sizeX, other.x + other.sizeX);
+                int maxY = Math.Max(y + sizeY, other.y + other.sizeY);
+                int maxZ = Math.Max(z + sizeZ, other.z + other.sizeZ);
                 int sx = maxX - minX;
                 int sy = maxY - minY;
                 int sz = maxZ - minZ;

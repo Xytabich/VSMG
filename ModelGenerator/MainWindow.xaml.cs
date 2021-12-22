@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Reflection;
+using System.Runtime.Loader;
 using System.Runtime.Serialization.Formatters;
 using System.Windows;
 using System.Windows.Controls;
@@ -23,6 +24,8 @@ namespace ModelGenerator
 
         public ICommand saveCommand { get; }
         public ICommand loadCommand { get; }
+
+        private AssemblyLoadContext moduleAssemblies;
 
         private Dictionary<string, GeneratorInfo> key2Generator = new Dictionary<string, GeneratorInfo>();
         private List<GeneratorInfo> generators = new List<GeneratorInfo>();
@@ -75,9 +78,12 @@ namespace ModelGenerator
 
             var dir = new DirectoryInfo(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "generators"));
             if(!dir.Exists) dir.Create();
+
+            moduleAssemblies = new ModulesLoadContext(dir);
+
             foreach(var module in dir.GetFiles("*.dll", SearchOption.TopDirectoryOnly))
             {
-                var asm = Assembly.LoadFile(module.FullName);
+                var asm = moduleAssemblies.LoadFromAssemblyPath(module.FullName);
                 foreach(var type in asm.GetTypes())
                 {
                     var attr = type.GetCustomAttribute<ShapeGeneratorAttribute>();
@@ -95,6 +101,7 @@ namespace ModelGenerator
                     }
                 }
             }
+
             for(int i = 0; i < generators.Count; i++)
             {
                 generatorSelect.Items.Add(new ComboBoxItem() { Content = generators[i].name });
@@ -114,6 +121,7 @@ namespace ModelGenerator
         protected override void OnClosed(EventArgs e)
         {
             base.OnClosed(e);
+            moduleAssemblies.Unload();
             Properties.Settings.Default.Save();
         }
 
@@ -200,7 +208,7 @@ namespace ModelGenerator
                                 case GENERATOR_PRESET_TYPE:
                                     if(key2Generator.TryGetValue((string)json["generator"], out var generator) && generator.presetType != null)
                                     {
-                                        AddGeneratorPreset(generator, path, json["data"].ToObject(generator.presetType));
+                                        AddGeneratorPreset(generator, path, json["data"].ToObject(generator.presetType, serializer));
                                     }
                                     break;
                             }
