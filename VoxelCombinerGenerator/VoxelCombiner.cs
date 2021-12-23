@@ -112,7 +112,10 @@ namespace VoxelCombinerGenerator
                                     for(int z = 0; z < sourceVolume.sizeZ; z++)
                                     {
                                         int oz = (sourceVolume.z - volume.z) + z;
-                                        volume.voxels[ox, oy, oz] = sourceVolume.voxels[x, y, z];
+                                        if(sourceVolume.voxels[x, y, z] >= 0)
+                                        {
+                                            volume.voxels[ox, oy, oz] = sourceVolume.voxels[x, y, z];
+                                        }
                                     }
                                 }
                             }

@@ -1,4 +1,5 @@
 ﻿using ModelGenerator;
+using System;
 using System.Collections.Generic;
 using Vintagestory.API.Client;
 
@@ -46,15 +47,44 @@ namespace VoxelCombinerGenerator
 
         public static void MergeNeighbors(MaterialCuboidInfo[,,] cuboids, int sizeX, int sizeY, int sizeZ)
         {
-            sizeX--;
-            sizeY--;
-            sizeZ--;
-            for(int x = 0; x <= sizeX; x++)
+            MergeNeighborsInternal(cuboids, 0, 0, 0, sizeX - 1, sizeY - 1, sizeZ - 1);
+        }
+
+        public static void MergeNeighbors(MaterialCuboidInfo[,,] cuboids, int split, int sizeX, int sizeY, int sizeZ)
+        {
+            MergeNeighbors(cuboids, split, split, split, sizeX, sizeY, sizeZ);
+        }
+
+        public static void MergeNeighbors(MaterialCuboidInfo[,,] cuboids, int splitX, int splitY, int splitZ, int sizeX, int sizeY, int sizeZ)
+        {
+            int xCount = (sizeX - 1) / splitX + 1;
+            int yCount = (sizeY - 1) / splitY + 1;
+            int zCount = (sizeZ - 1) / splitZ + 1;
+            for(int x = 0; x < xCount; x++)
             {
-                for(int y = 0; y <= sizeY; y++)
+                int xFrom = x * splitX;
+                int xTo = Math.Min(xFrom + splitX - 1, sizeX - 1);
+                for(int y = 0; y < yCount; y++)
                 {
-                    int index = 0;
-                    while(index < sizeZ)
+                    int yFrom = y * splitY;
+                    int yTo = Math.Min(yFrom + splitY - 1, sizeY - 1);
+                    for(int z = 0; z < zCount; z++)
+                    {
+                        int zFrom = z * splitZ;
+                        MergeNeighborsInternal(cuboids, xFrom, yFrom, zFrom, xTo, yTo, Math.Min(zFrom + splitZ - 1, sizeZ - 1));
+                    }
+                }
+            }
+        }
+
+        private static void MergeNeighborsInternal(MaterialCuboidInfo[,,] cuboids, int fromX, int fromY, int fromZ, int toX, int toY, int toZ)
+        {
+            for(int x = fromX; x <= toX; x++)
+            {
+                for(int y = fromY; y <= toY; y++)
+                {
+                    int index = fromZ;
+                    while(index < toZ)
                     {
                         var baseCuboid = cuboids[x, y, index];
                         var nextCuboid = cuboids[x, y, index + 1];
@@ -71,12 +101,12 @@ namespace VoxelCombinerGenerator
                     }
                 }
             }
-            for(int z = 0; z <= sizeZ; z++)
+            for(int z = fromZ; z <= toZ; z++)
             {
-                for(int y = 0; y <= sizeY; y++)
+                for(int y = fromY; y <= toY; y++)
                 {
-                    int index = 0;
-                    while(index < sizeX)
+                    int index = fromX;
+                    while(index < toX)
                     {
                         var baseCuboid = cuboids[index, y, z];
                         if(baseCuboid != null)
@@ -106,19 +136,19 @@ namespace VoxelCombinerGenerator
                         }
                         index++;
                     }
-                    var cuboid = cuboids[sizeX, y, z];
+                    var cuboid = cuboids[toX, y, z];
                     if(cuboid != null && cuboid.movedTo != null)
                     {
-                        cuboids[sizeX, y, z] = (MaterialCuboidInfo)cuboid.movedTo;
+                        cuboids[toX, y, z] = (MaterialCuboidInfo)cuboid.movedTo;
                     }
                 }
             }
-            for(int z = 0; z <= sizeZ; z++)
+            for(int z = fromZ; z <= toZ; z++)
             {
-                for(int x = 0; x <= sizeX; x++)
+                for(int x = fromX; x <= toX; x++)
                 {
-                    int index = 0;
-                    while(index < sizeY)
+                    int index = fromY;
+                    while(index < toY)
                     {
                         var baseCuboid = cuboids[x, index, z];
                         if(baseCuboid != null)
@@ -148,10 +178,10 @@ namespace VoxelCombinerGenerator
                         }
                         index++;
                     }
-                    var cuboid = cuboids[x, sizeY, z];
+                    var cuboid = cuboids[x, toY, z];
                     if(cuboid != null && cuboid.movedTo != null)
                     {
-                        cuboids[x, sizeY, z] = (MaterialCuboidInfo)cuboid.movedTo;
+                        cuboids[x, toY, z] = (MaterialCuboidInfo)cuboid.movedTo;
                     }
                 }
             }

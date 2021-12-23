@@ -1,5 +1,6 @@
 ﻿using ModelGenerator;
 using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using Vintagestory.API.Common;
 using Vintagestory.API.MathTools;
@@ -58,7 +59,7 @@ namespace VoxelCombinerGenerator
             int sizeY = volume.sizeY;
             int sizeZ = volume.sizeZ;
             var cuboids = VoxelModelUtils.VoxelsToCuboids(volume.voxels, context.materials, true, sizeX, sizeY, sizeZ);
-            VoxelModelUtils.MergeNeighbors(cuboids, sizeX, sizeY, sizeZ);
+            VoxelModelUtils.MergeNeighbors(cuboids, Math.Min(context.shape.TextureWidth, context.shape.TextureHeight), sizeX, sizeY, sizeZ);
             ModelUtils.RemoveInvisibleCuboids(cuboids, sizeX, sizeY, sizeZ);
 
             var shape = context.shape;
