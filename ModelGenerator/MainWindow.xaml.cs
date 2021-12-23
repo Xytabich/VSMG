@@ -38,11 +38,11 @@ namespace ModelGenerator
         private ObservableCollection<MaterialProperties> materialsObservable;
         private IObservableReadonlyList<MaterialProperties> materialsObservableReadonly;
 
-        private List<string> shapePresetNames = new List<string>();
+        private ObservableCollection<string> shapePresetNames = new ObservableCollection<string>();
         private List<ShapePresetData> shapePresets = new List<ShapePresetData>();
         private Dictionary<string, int> path2ShapePresetIndex = new Dictionary<string, int>();
 
-        private List<string> generatorPresetNames = new List<string>();
+        private ObservableCollection<string> generatorPresetNames = new ObservableCollection<string>();
         private Dictionary<string, GeneratorPresetInfo> generatorPresets = new Dictionary<string, GeneratorPresetInfo>();
 
         public MainWindow()
@@ -61,12 +61,14 @@ namespace ModelGenerator
             AddMaterialRow(new MaterialProperties() { name = "Material", texture = "material" });
 
             generatorPresetNames.Add("Copy from preset...");
-            generatorPreset.ItemsSource = generatorPresetNames;
+            generatorPreset.ItemsSource = new ReadOnlyObservableCollection<string>(generatorPresetNames);
+            generatorPreset.IsSynchronizedWithCurrentItem = true;
             generatorPreset.SelectedIndex = 0;
             generatorPreset.IsEnabled = false;
 
             shapePresetNames.Add("Copy from preset...");
-            shapePreset.ItemsSource = shapePresetNames;
+            shapePreset.ItemsSource = new ReadOnlyObservableCollection<string>(shapePresetNames);
+            shapePreset.IsSynchronizedWithCurrentItem = true;
             shapePreset.SelectedIndex = 0;
             shapePreset.IsEnabled = false;
 
