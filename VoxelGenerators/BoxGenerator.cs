@@ -27,9 +27,9 @@ namespace VoxelGenerators
             return ((GeneratorData)generatorData).GetSave();
         }
 
-        public int[,,] Generate(VoxelGeneratorContext context)
+        public VoxelVolume Generate(VoxelGeneratorContext context)
         {
-            return ((GeneratorData)context.generatorData).Generate(context.materialIndex);
+            return new VoxelVolume(0, 0, 0, ((GeneratorData)context.generatorData).Generate(context.materialIndex));
         }
 
         private static unsafe int[,,] GenerateVoxels(int x, int y, int z, int material)

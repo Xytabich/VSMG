@@ -159,6 +159,7 @@ namespace VoxelCombinerGenerator
 
         private static bool CullSide(int main, int neighbor, IReadOnlyList<MaterialProperties> materials, bool cullBetweenTransparents)
         {
+            if(main == neighbor) return true;
             if(neighbor < 0) return false;
 
             bool mainOpaque = true;

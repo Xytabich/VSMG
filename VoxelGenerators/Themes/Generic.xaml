@@ -37,8 +37,8 @@
                         <Grid.RowDefinitions>
                             <RowDefinition Height="26"></RowDefinition>
                         </Grid.RowDefinitions>
-                        <Label Content="Radius"/>
-                        <main:Vec3iBox x:Name="boxSize"/>
+                        <Label Content="Size"/>
+                        <main:Vec3iBox x:Name="boxSize" IsSigned="False"/>
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>

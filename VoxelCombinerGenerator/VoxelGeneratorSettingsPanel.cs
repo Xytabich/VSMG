@@ -166,22 +166,12 @@ namespace VoxelCombinerGenerator
 
             private IObservableReadonlyList<MaterialProperties> materials;
 
-            public event NotifyCollectionChangedEventHandler CollectionChanged
-            {
-                add
-                {
-                    materials.CollectionChanged += value;
-                }
-
-                remove
-                {
-                    materials.CollectionChanged -= value;
-                }
-            }
+            public event NotifyCollectionChangedEventHandler CollectionChanged;
 
             public MaterialNamesCollection(IObservableReadonlyList<MaterialProperties> materials)
             {
                 this.materials = materials;
+                materials.CollectionChanged += OnCollectionChanged;
             }
 
             public string this[int index] => materials[index].name;
@@ -199,6 +189,50 @@ namespace VoxelCombinerGenerator
                 foreach(var material in materials)
                 {
                     yield return material.name;
+                }
+            }
+
+            private void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+            {
+                if(CollectionChanged != null)
+                {
+                    string[] newItems = null, oldItems = null;
+                    if(e.NewItems != null)
+                    {
+                        newItems = new string[e.NewItems.Count];
+                        for(int i = 0; i < newItems.Length; i++)
+                        {
+                            newItems[i] = ((MaterialProperties)e.NewItems[i]).name;
+                        }
+                    }
+                    if(e.OldItems != null)
+                    {
+                        oldItems = new string[e.OldItems.Count];
+                        for(int i = 0; i < oldItems.Length; i++)
+                        {
+                            oldItems[i] = ((MaterialProperties)e.OldItems[i]).name;
+                        }
+                    }
+                    NotifyCollectionChangedEventArgs evt = null;
+                    switch(e.Action)
+                    {
+                        case NotifyCollectionChangedAction.Add:
+                            evt = new NotifyCollectionChangedEventArgs(e.Action, newItems, e.NewStartingIndex);
+                            break;
+                        case NotifyCollectionChangedAction.Remove:
+                            evt = new NotifyCollectionChangedEventArgs(e.Action, oldItems, e.OldStartingIndex);
+                            break;
+                        case NotifyCollectionChangedAction.Replace:
+                            evt = new NotifyCollectionChangedEventArgs(e.Action, oldItems, newItems, e.NewStartingIndex);
+                            break;
+                        case NotifyCollectionChangedAction.Reset:
+                            evt = new NotifyCollectionChangedEventArgs(e.Action);
+                            break;
+                        case NotifyCollectionChangedAction.Move:
+                            evt = new NotifyCollectionChangedEventArgs(e.Action, oldItems, e.NewStartingIndex, e.OldStartingIndex);
+                            break;
+                    }
+                    CollectionChanged.Invoke(sender, evt);
                 }
             }
         }
