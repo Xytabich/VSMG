@@ -12,6 +12,6 @@ namespace VoxelCombinerGenerator
 
         void ApplySaveData(object generatorData, object saveData);
 
-        int[,,] Generate(VoxelGeneratorContext context);
+        VoxelVolume Generate(VoxelGeneratorContext context);
     }
 }

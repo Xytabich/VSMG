@@ -8,16 +8,23 @@ namespace ModelGenerator
 {
     public static class ControlUtils
     {
+        private static readonly RegexInputVerifier integerVerifier = new RegexInputVerifier(@"^[0-9]*$");
+        private static readonly RegexInputVerifier signedIntegerVerifier = new RegexInputVerifier(@"^-?[0-9]*$");
+        private static readonly RegexInputVerifier floatVerifier = new RegexInputVerifier(@"^-?[0-9]*([\.]([0-9]+([eE][-+]?\d*)?)?)?$");
+
         public static void InitIntegerField(this TextBox field)
         {
-            field.PreviewTextInput += IsIntegerText;
-            DataObject.AddPastingHandler(field, IsIntegerPaste);
+            integerVerifier.InitField(field);
+        }
+
+        public static void InitSignedIntegerField(this TextBox field)
+        {
+            signedIntegerVerifier.InitField(field);
         }
 
         public static void InitFloatField(this TextBox field)
         {
-            field.PreviewTextInput += IsFloatText;
-            DataObject.AddPastingHandler(field, IsFloatPaste);
+            floatVerifier.InitField(field);
         }
 
         public static int GetInteger(this TextBox field, int def = default)
@@ -51,47 +58,53 @@ namespace ModelGenerator
             field.Text = value.ToString("g", NumberFormatInfo.InvariantInfo);
         }
 
-        private static readonly Regex integerPattern = new Regex(@"^[0-9]*$");
-        private static void IsIntegerText(object sender, TextCompositionEventArgs e)
+        public static float GetSingle(this TextBox field, float def = default)
         {
-            var box = sender as TextBox;
-            e.Handled = !integerPattern.IsMatch(box.Text.Insert(box.CaretIndex, e.Text));
-        }
-        private static void IsIntegerPaste(object sender, DataObjectPastingEventArgs e)
-        {
-            if(e.DataObject.GetDataPresent(typeof(string)))
-            {
-                string text = (string)e.DataObject.GetData(typeof(string));
-                if(!integerPattern.IsMatch(text))
-                {
-                    e.CancelCommand();
-                }
-            }
-            else
-            {
-                e.CancelCommand();
-            }
+            float value;
+            if(!float.TryParse(field.Text.Trim(), NumberStyles.Float, NumberFormatInfo.InvariantInfo, out value)) value = def;
+            return value;
         }
 
-        private static readonly Regex floatPattern = new Regex(@"^-?[0-9]*[\.]?[0-9]*$");
-        private static void IsFloatText(object sender, TextCompositionEventArgs e)
+        public static void SetSingle(this TextBox field, float value)
         {
-            var box = sender as TextBox;
-            e.Handled = !floatPattern.IsMatch(box.Text.Insert(box.CaretIndex, e.Text));
+            field.Text = value.ToString("g", NumberFormatInfo.InvariantInfo);
         }
-        private static void IsFloatPaste(object sender, DataObjectPastingEventArgs e)
+
+        public class RegexInputVerifier
         {
-            if(e.DataObject.GetDataPresent(typeof(string)))
+            private Regex pattern;
+
+            public RegexInputVerifier(string pattern)
             {
-                string text = (string)e.DataObject.GetData(typeof(string));
-                if(!floatPattern.IsMatch(text))
+                this.pattern = new Regex(pattern);
+            }
+
+            public void InitField(TextBox field)
+            {
+                field.PreviewTextInput += IsValidText;
+                DataObject.AddPastingHandler(field, IsValidPaste);
+            }
+
+            private void IsValidText(object sender, TextCompositionEventArgs e)
+            {
+                var box = sender as TextBox;
+                e.Handled = !pattern.IsMatch(box.Text.Insert(box.CaretIndex, e.Text));
+            }
+
+            private void IsValidPaste(object sender, DataObjectPastingEventArgs e)
+            {
+                if(e.DataObject.GetDataPresent(typeof(string)))
+                {
+                    string text = (string)e.DataObject.GetData(typeof(string));
+                    if(!pattern.IsMatch(text))
+                    {
+                        e.CancelCommand();
+                    }
+                }
+                else
                 {
                     e.CancelCommand();
                 }
-            }
-            else
-            {
-                e.CancelCommand();
             }
         }
     }

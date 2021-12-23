@@ -48,13 +48,16 @@ namespace VoxelCombinerGenerator
 
         public void Generate(GeneratorContext context)
         {
-            var voxels = VoxelCombiner.Generate(new VoxelGeneratorContext() { materials = context.materials, generatorData = instance });
+            var volume = VoxelCombiner.Generate(new VoxelGeneratorContext() { materials = context.materials, generatorData = instance });
 
-            var offset = panel.GetOffset();
-            int sizeX = voxels.GetLength(0);
-            int sizeY = voxels.GetLength(1);
-            int sizeZ = voxels.GetLength(2);
-            var cuboids = VoxelModelUtils.VoxelsToCuboids(voxels, context.materials, true, sizeX, sizeY, sizeZ);
+            var offset = panel.GetOffset().Clone();
+            offset.X += volume.x;
+            offset.Y += volume.y;
+            offset.Z += volume.z;
+            int sizeX = volume.sizeX;
+            int sizeY = volume.sizeY;
+            int sizeZ = volume.sizeZ;
+            var cuboids = VoxelModelUtils.VoxelsToCuboids(volume.voxels, context.materials, true, sizeX, sizeY, sizeZ);
             VoxelModelUtils.MergeNeighbors(cuboids, sizeX, sizeY, sizeZ);
             ModelUtils.RemoveInvisibleCuboids(cuboids, sizeX, sizeY, sizeZ);
 

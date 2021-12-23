@@ -6,6 +6,8 @@ namespace ModelGenerator
 {
     public class Vec3iBox : Vec3BoxBase<Vec3i>
     {
+        public bool IsSigned { get; set; } = true;
+
         static Vec3iBox()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(Vec3iBox), new FrameworkPropertyMetadata(typeof(Vec3BoxBase)));
@@ -18,17 +20,20 @@ namespace ModelGenerator
             this.value.Z = value.Z;
             if(x != null)
             {
-                x.SetDouble(value.X);
-                y.SetDouble(value.Y);
-                z.SetDouble(value.Z);
+                x.SetInteger(value.X);
+                y.SetInteger(value.Y);
+                z.SetInteger(value.Z);
             }
         }
 
         protected override void InitInputs()
         {
-            x.InitIntegerField();
-            y.InitIntegerField();
-            z.InitIntegerField();
+            if(IsSigned) x.InitSignedIntegerField();
+            else x.InitIntegerField();
+            if(IsSigned) y.InitSignedIntegerField();
+            else y.InitIntegerField();
+            if(IsSigned) z.InitSignedIntegerField();
+            else z.InitIntegerField();
             x.SetInteger(value.X);
             y.SetInteger(value.Y);
             z.SetInteger(value.Z);
