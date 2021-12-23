@@ -29,6 +29,25 @@ The radius, parity and offset settings are the same as for the sphere.
 - Vertical axis
 It also has a hollow version (i.e. a pipe).
 
+### Voxel combiner
+Combines the results of voxel generators in different modes:
+- Add - Adds new voxels without replacing existing ones
+- Overlap - Adds new voxels replacing existing ones
+- Intersect - Leaves only overlapping voxels but does not replace them with new ones
+- Intersect Replace - Leaves only intersecting voxels and also replaces them with new ones
+- Subtract - Removes voxels by shape
+- Swap Subtract - Same as subtraction but the shapes are swapped
+- Replace - Replaces intersecting voxels with new ones
+- Swap Replace - Same as replacement but the shapes are swapped
+- Difference - Adds new voxels but removes intersecting voxels
+
+It also allows you to assign material and offset to the generator.
+
+There are several voxel generators at the moment:
+- Sphere
+- Cylinder
+- Box
+
 ### Custom generators
 WPF is used for UI. The generator must be marked with the `ShapeGenerator(...)` attribute and inherit from `IShapeGenerator`.
 
